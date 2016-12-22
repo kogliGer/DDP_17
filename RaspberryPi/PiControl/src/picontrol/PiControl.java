@@ -16,6 +16,12 @@ public class PiControl {
      */
     public static void main(String[] args) {
         System.out.println("hello world");
+        NodeJsConnection connection = new NodeJsConnection();
+        try{
+            Thread.sleep(10000);
+        }catch(Exception ex){
+            
+        }
     }
     
 }
