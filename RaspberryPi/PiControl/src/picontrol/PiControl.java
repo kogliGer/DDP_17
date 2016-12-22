@@ -5,23 +5,35 @@
  */
 package picontrol;
 
+
 /**
  *
  * @author alexa
  */
-public class PiControl {
+public class PiControl implements WebCommandInterface{
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         System.out.println("hello world");
-        NodeJsConnection connection = new NodeJsConnection();
+        NodeJsConnection.setup();
+        GPIO.setup();
+        PiControl obj = new PiControl();
+        Lighting lightning = new Lighting();
+        
+        NodeJsConnection.sendMessage("hello");
         try{
             Thread.sleep(10000);
         }catch(Exception ex){
             
         }
+    }
+
+    public PiControl(){
+        NodeJsConnection.thread.addEventListener(this);
+    }
+    @Override
+    public void commandReceived(String command) {
+        System.out.println("PiControl Object received: " + command);
+        
     }
     
 }
