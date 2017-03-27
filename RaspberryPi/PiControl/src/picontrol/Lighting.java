@@ -5,13 +5,10 @@
  */
 package picontrol;
 
-import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.RaspiPin;
+import nodejsconnection.NodeJsConnection;
+import nodejsconnection.WebCommandInterface;
 
 public class Lighting implements WebCommandInterface{
     
@@ -20,10 +17,10 @@ public class Lighting implements WebCommandInterface{
     }
 
     @Override
-    public void commandReceived(String command) {
-        System.out.println("Lighting Object received: " + command);
-        if(JsonObject.readFrom(command).get("lighting") != null){
-            updatePinStates(JsonObject.readFrom(command).get("lighting").asObject());
+    public void commandReceived(JsonObject jsonObject) {
+        System.out.println("Lighting Object received: " + jsonObject.toString());
+        if(jsonObject.get("lighting") != null){
+            updatePinStates(jsonObject.get("lighting").asObject());
         }
     }
     

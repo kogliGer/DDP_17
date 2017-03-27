@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package picontrol;
 
 import com.eclipsesource.json.JsonObject;
@@ -11,18 +6,20 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.wiringpi.SoftPwm;
+import nodejsconnection.NodeJsConnection;
+import nodejsconnection.WebCommandInterface;
 
-/**
- *
- * @author Alexander
- */
+
 public final class GPIO implements WebCommandInterface{
     
     public final static GpioController GPIO_CONTROLLER = GpioFactory.getInstance();
-    public final static GpioPinDigitalOutput LED1 = GPIO_CONTROLLER.provisionDigitalOutputPin(RaspiPin.GPIO_01, "LED1", PinState.LOW);
+    public final static GpioPinDigitalOutput LED1 = GPIO_CONTROLLER.provisionDigitalOutputPin(RaspiPin.GPIO_02, "LED1", PinState.LOW);
     
     public static void setup(){
         GPIO gpio = new GPIO();
+        
+        SoftPwm.softPwmCreate(1, 0, 100);
     }
     
     public GPIO(){
@@ -30,16 +27,22 @@ public final class GPIO implements WebCommandInterface{
     }
 
     @Override
-    public void commandReceived(String command) {
-        if(JsonObject.readFrom(command).get("GPIO") != null){
-            JsonObject GPIOJsonObject = JsonObject.readFrom(command).get("GPIO").asObject();
+    public void commandReceived(JsonObject jsonObject) {
+        if(jsonObject.get("GPIO") != null){
+            JsonObject GPIOJsonObject = jsonObject.get("GPIO").asObject();
             controlGPIO(GPIOJsonObject);
         }
     }
     
     private void controlGPIO(JsonObject jsonObject){
         if(jsonObject.get("1") != null){
-            boolean GPIO_1_value = jsonObject.get("1").asBoolean();
+            int GPIO_1_value = jsonObject.get("1").asInt();
+            System.out.println("setting pin 1 to " + GPIO_1_value);
+            SoftPwm.softPwmWrite(1, GPIO_1_value);
+        }
+        
+        if(jsonObject.get("2") != null){
+            boolean GPIO_1_value = jsonObject.get("2").asBoolean();
             if(GPIO_1_value == true) GPIO.LED1.setState(PinState.HIGH);
             else GPIO.LED1.setState(PinState.LOW);
         }

@@ -1,15 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package picontrol;
 
 
-/**
- *
- * @author alexa
- */
+import com.eclipsesource.json.JsonObject;
+import nodejsconnection.NodeJsConnection;
+import nodejsconnection.WebCommandInterface;
+
+
 public class PiControl implements WebCommandInterface{
 
     public static void main(String[] args) {
@@ -19,7 +15,7 @@ public class PiControl implements WebCommandInterface{
         PiControl obj = new PiControl();
         Lighting lightning = new Lighting();
         
-        NodeJsConnection.sendMessage("hello");
+        Web.sendMessage("hello");
         try{
             Thread.sleep(10000);
         }catch(Exception ex){
@@ -30,10 +26,11 @@ public class PiControl implements WebCommandInterface{
     public PiControl(){
         NodeJsConnection.thread.addEventListener(this);
     }
-    @Override
-    public void commandReceived(String command) {
-        System.out.println("PiControl Object received: " + command);
-        
-    }
     
+    
+    @Override
+    public void commandReceived(JsonObject json) {
+        System.out.println("PiControl Object received: " + json.toString());
+        
+    } 
 }
